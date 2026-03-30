@@ -1,0 +1,5 @@
+{
+  "name": "Khảo sát Sở thích Toán Văn",
+  "description": "Ứng dụng khảo sát sở thích học môn Toán và Văn của học sinh bằng mã QR, hiển thị kết quả trực tiếp bằng biểu đồ Venn.",
+  "requestFramePermissions": []
+}
