@@ -16,8 +16,23 @@ async function startServer() {
   let surveyData = {
     mathOnly: 0,
     literatureOnly: 0,
-    both: 0
+    both: 0,
+    neither: 0
   };
+
+  app.use(express.json());
+
+  app.post('/api/vote', (req, res) => {
+    const { choice } = req.body;
+    if (choice === 'math') surveyData.mathOnly++;
+    else if (choice === 'literature') surveyData.literatureOnly++;
+    else if (choice === 'both') surveyData.both++;
+    else if (choice === 'neither') surveyData.neither++;
+    
+    // Broadcast updated state to all clients
+    io.emit('survey-data', surveyData);
+    res.json({ success: true });
+  });
 
   io.on('connection', (socket) => {
     // Send current state to new client
@@ -28,6 +43,7 @@ async function startServer() {
       if (choice === 'math') surveyData.mathOnly++;
       else if (choice === 'literature') surveyData.literatureOnly++;
       else if (choice === 'both') surveyData.both++;
+      else if (choice === 'neither') surveyData.neither++;
       
       // Broadcast updated state to all clients
       io.emit('survey-data', surveyData);
@@ -35,7 +51,7 @@ async function startServer() {
 
     // Handle reset
     socket.on('reset', () => {
-      surveyData = { mathOnly: 0, literatureOnly: 0, both: 0 };
+      surveyData = { mathOnly: 0, literatureOnly: 0, both: 0, neither: 0 };
       io.emit('survey-data', surveyData);
     });
   });
